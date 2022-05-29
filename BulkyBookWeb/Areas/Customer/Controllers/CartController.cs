@@ -13,6 +13,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
         private readonly IUnitOfWork _unitOfWork;
 
         public ShoppingCartVM ShoppingCartVM;
+        public int OrderTotal { get; set; }
 
         public CartController(IUnitOfWork unitOfWork)
         {
@@ -30,7 +31,29 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 includeProperties: "Product")
             };
 
+            foreach (var cart in ShoppingCartVM.ListCart)
+            {
+                cart.Price = GetPriceBasedOnQuantity(cart.Count, cart.Product.Price,
+                    cart.Product.Price50, cart.Product.Price100);
+            }
+
             return View(ShoppingCartVM);
+        }
+
+        private double GetPriceBasedOnQuantity(int quatity, double price, double price50, double price100)
+        {
+            if (quatity < 50)
+            {
+                return price;
+            }
+            else
+            {
+                if (quatity <= 100)
+                {
+                    return price50;
+                }
+                return price100;
+            }       
         }
     }
 }
