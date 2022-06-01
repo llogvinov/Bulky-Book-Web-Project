@@ -13,8 +13,8 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
     public class CartController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-
-        public ShoppingCartVM ShoppingCartVM;
+        [BindProperty]
+        public ShoppingCartVM ShoppingCartVM { get; set; }
         public int OrderTotal { get; set; }
 
         public CartController(IUnitOfWork unitOfWork)
@@ -104,7 +104,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             {
                 OrderDetail orderDetail = new()
                 {
-                    ProductId = cart.Id,
+                    ProductId = cart.ProductId,
                     OrderId = ShoppingCartVM.OrderHeader.Id,
                     Price = cart.Price,
                     Count = cart.Count
