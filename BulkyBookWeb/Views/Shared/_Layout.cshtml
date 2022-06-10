@@ -1,4 +1,6 @@
-﻿@using BulkyBook.Utility
+﻿@using Microsoft.AspNetCore.Http
+@using BulkyBook.Utility
+@inject IHttpContextAccessor httpConextAccessor
 
 <!DOCTYPE html>
 <html lang="en">
@@ -14,56 +16,70 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-  <div class="container-fluid">
-    @*<a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>*@
+      <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container-fluid">
+        @*<a class="navbar-brand" href="#">Navbar</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>*@
 
-    <div class="collapse navbar-collapse" id="navbarColor02">
-      <ul class="navbar-nav me-auto">
-        <li class="nav-item">
-          <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
-        </li>
-        @if(User.IsInRole(SD.Role_Admin)) 
-        {
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Content Managment</a>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>
-                <a class="dropdown-item" asp-area="Admin" asp-controller="CoverType" asp-action="Index">Cover Type</a>
-                <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Product</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" asp-area="Admin" asp-controller="Company" asp-action="Index">Company</a>
-              </div>
+        <div class="collapse navbar-collapse" id="navbarColor02">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
             </li>
-        }
-        <li class="nav-item">
-            <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="Index">
-                Manage Order
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" asp-area="Customer" asp-controller="Cart" asp-action="Index">
-                <i class="bi bi-cart"></i>
-            </a>
-        </li>
-      </ul>
-      <partial name="_LoginPartial" />
-      @*<form class="d-flex">
-        <input class="form-control me-sm-2" type="text" placeholder="Search">
-        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-      </form>*@
-    </div>
-  </div>
-</nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+            @if(User.IsInRole(SD.Role_Admin)) 
+            {
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Content Managment</a>
+                  <div class="dropdown-menu">
+                    <a class="dropdown-item" asp-area="Admin" asp-controller="Category" asp-action="Index">Category</a>
+                    <a class="dropdown-item" asp-area="Admin" asp-controller="CoverType" asp-action="Index">Cover Type</a>
+                    <a class="dropdown-item" asp-area="Admin" asp-controller="Product" asp-action="Index">Product</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" asp-area="Admin" asp-controller="Company" asp-action="Index">Company</a>
+                  </div>
+                </li>
+            }
+            <li class="nav-item">
+                <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="Index">
+                    Manage Order
+                </a>
+            </li>
+
+                        @if (httpConextAccessor.HttpContext.Session.GetInt32(SD.SessionCart) != null)
+                        {
+                            <li class="nav-item">
+                <a class="nav-link" asp-area="Customer" asp-controller="Cart" asp-action="Index">
+                    <i class="bi bi-cart"></i> &nbsp;
+                    (@httpConextAccessor.HttpContext.Session.GetInt32(SD.SessionCart))
+                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                <a class="nav-link" asp-area="Customer" asp-controller="Cart" asp-action="Index">
+                    <i class="bi bi-cart"></i> &nbsp; (0)
+                </a>
+                            </li>
+                        }
+
+          </ul>
+          <partial name="_LoginPartial" />
+          @*<form class="d-flex">
+            <input class="form-control me-sm-2" type="text" placeholder="Search">
+            <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+          </form>*@
+        </div>
+      </div>
+      </nav>
+        </header>
+        <div class="container">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
 
     <footer class="footer text-muted bg-primary">
         <div class="container">
